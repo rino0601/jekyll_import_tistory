@@ -1,6 +1,9 @@
 # coding=utf-8
 __author__ = 'lemonApple'
 
+import os
+import codecs
+
 from bs4 import BeautifulSoup
 
 
@@ -63,16 +66,35 @@ class Post(object):
         </trackback>
     </post>
     """
-    def __init__(self, title, date, category, filename, tag, content):
+
+    def __init__(self, title, date, category, filename, tags, content):
         super(Post, self).__init__()
+        self.content = content
+        self.tags = tags
+        self.filename = filename
+        self.category = category
+        self.date = date
+        self.title = title
+
+    def write_to_md(self, output_dir):
+        with codecs.open(os.path.join(output_dir, "%s-%s.markdown" % (self.date, self.filename)), "w",
+                         encoding="utf-8") as f:
+            f.write("---\n")
+            f.write("layout: post\n")
+            f.write("title: %s\n" % self.title)
+            f.write("---\n")
+            f.write(self.content)
 
 
 def main(xml_file=None):
     soup = BeautifulSoup(xml_file)
     blog = soup.blog
-    posts = blog.find_all('post')
-    # posts = [Post(title=post.title) for post in posts]
-    return posts[0].title.string
+    xml_posts = blog.find_all('post')
+    posts = [Post(title=post.title.text, date=post.published.text, category=post.category.text, filename=post.id.text,
+                  tags=post.find_all('tag'), content=post.content.text)
+             for post in xml_posts]
+
+    return posts[0]
 
 
 if __name__ == '__main__':
