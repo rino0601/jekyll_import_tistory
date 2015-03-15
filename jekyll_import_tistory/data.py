@@ -5,6 +5,18 @@ import os
 import codecs
 import re
 
+import yaml
+
+
+class Post(object):
+    def __init__(self, is_draft, filename, title, category, tags, content):
+        self.is_draft = is_draft
+        self.filename = filename
+        self.title = title
+        self.category = category
+        self.tags = tags
+        self.content = content
+
 
 class PostBuilder(object):
     """
@@ -81,15 +93,19 @@ class PostBuilder(object):
     def build(self):
         pass
 
-    def write_to_md(self, output_dir):
-        with codecs.open(os.path.join(output_dir, "%s-%s.markdown" % (self.text_date_num, self.text_id)), "w",
+    def temp_write_to_md(self, output_dir):
+        with open(os.path.join(output_dir, "%s-%s.markdown" % (self.text_date_num, self.text_id)), "w") as f:
+            f.write("---\n")
+            f.write(yaml.dump({'layout': 'post',
+                               'title': u"%s" % self.text_title_unprocessed},
+                              default_flow_style=False,
+                              allow_unicode=True))
+            f.write("---\n")
+
+        with codecs.open(os.path.join(output_dir, "%s-%s.markdown" % (self.text_date_num, self.text_id)), "a",
                          encoding="utf-8") as f:
-            f.write("---\n")
-            f.write("layout: post\n")
-            f.write("title: %s\n" % self.text_title_unprocessed)
-            f.write("---\n")
             f.write(self.html_content)
 
-    def find_tistory_meta(self):
+    def temp_find_tistory_meta(self):
         return re.search("\[##_(.*?)_##]", self.html_content,
                          re.UNICODE)  # re.search("\[#M.*?M#]", self.content, re.UNICODE)

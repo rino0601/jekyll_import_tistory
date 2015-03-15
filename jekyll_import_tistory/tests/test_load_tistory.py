@@ -7,21 +7,27 @@ from jekyll_import_tistory import main
 
 
 class MyTestCase(unittest.TestCase):
-    def test_can_open(self):
-        something = main.main(open('../tistory-small.xml'))
+    def setUp(self):
+        self.test_data = main.main(open('../tistory-small.xml'))
+        self.drafts_dir = '_drafts'
+        if not os.path.exists(self.drafts_dir):
+            os.makedirs(self.drafts_dir)
 
-        directory = '_drafts'
-        if not os.path.exists(directory):
-            os.makedirs(directory)
-
-        for some in something:
-            # some.write_to_md(directory)
-            if some.find_tistory_meta():
-                print some.text_id
-                for s in some.find_tistory_meta().groups():
+    def test_re(self):
+        for post_builder in self.test_data:
+            # post_builder.write_to_md(directory)
+            if post_builder.temp_find_tistory_meta():
+                print post_builder.text_id
+                for s in post_builder.temp_find_tistory_meta().groups():
                     print s
 
-        self.assertEqual(False, something)
+        self.assertEqual(False, self.test_data)
+
+    def test_write_post(self):
+        for post_builder in self.test_data:
+            post_builder.temp_write_to_md(self.drafts_dir)
+
+        self.assertTrue(True)
 
 
 if __name__ == '__main__':
