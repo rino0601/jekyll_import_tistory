@@ -4,7 +4,9 @@ __author__ = 'lemonApple'
 import os
 import codecs
 import re
+
 import yaml
+from bs4 import BeautifulSoup
 
 
 class Post(object):
@@ -104,9 +106,40 @@ class PostBuilder(object):
             md_out.write(yaml.dump(header_yaml, default_flow_style=False, allow_unicode=True))
             md_out.write("---\n")
 
+        self.html_content = handle_tistory_attachment(self.html_content)
+
         with codecs.open(file_path, "a", encoding="utf-8") as md_out:
             md_out.write(self.html_content)
 
-    def temp_find_tistory_meta(self):
-        return re.search("\[##_(.*?)_##]", self.html_content,
-                         re.UNICODE)  # re.search("\[#M.*?M#]", self.content, re.UNICODE)
+    def temp_find_fold_text(self):
+        # found = re.finditer("\[#M.*?M#]", self.html_content, re.UNICODE)
+        pass
+
+    def temp_find_movie(self):
+        pass
+
+
+def handle_tistory_attachment(html_content):
+    pattern = re.compile(r'\[##_(?!Movie).*?\|(?P<pre_path>cfile.*?\.uf).(?P<post_path>.+?)\|(?P<attr>.*?)\|_##\]',
+                         re.UNICODE)
+    return pattern.sub(_processing_attachment, html_content)
+
+
+def _processing_attachment(matched):
+    print matched.groupdict()
+    if 'image/jpeg' in matched.group('attr'):
+        return u'<img src="{site_url_tmpl}{dir_path}{file_path}" {attr}>'.format(
+            site_url_tmpl='{{site.url}}/',
+            dir_path='from_tistory/',
+            file_path=matched.group('post_path'),
+            attr=matched.group('attr'))
+    else:
+        tag = u'<a href="{site_url_tmpl}{dir_path}{file_path}" {attr}></a>'.format(
+            site_url_tmpl='{{site.url}}/',
+            dir_path='from_tistory/',
+            file_path=matched.group('post_path'),
+            attr=matched.group('attr'))
+        soup = BeautifulSoup(tag).a
+        soup.string = soup['filename']
+        return unicode(soup)
+
