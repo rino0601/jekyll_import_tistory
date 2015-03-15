@@ -8,13 +8,15 @@ from jekyll_import_tistory import main, data
 
 
 class MyTestCase(unittest.TestCase):
-    def setUp(self):
-        xml_path = os.path.join(os.path.dirname(__file__), os.pardir, 'tistory-small.xml')
-
-        self.test_data = main.main(open(xml_path))
-        self.drafts_dir_path = os.path.join(os.path.dirname(__file__), '_drafts')
-        if not os.path.exists(self.drafts_dir_path):
-            os.makedirs(self.drafts_dir_path)
+    def test_folded_content(self):
+        test_input = u'[#M_openCV 받기|접기|<p>우선 sorceForge.net으로 갑니다. </p>_M#]'
+        expect_output = u'<div class="tistory_folded_content">' \
+                        u'<span class="open">openCV 받기</span>' \
+                        u'<span class="close">접기</span>' \
+                        u'<p>우선 sorceForge.net으로 갑니다. </p>' \
+                        u'</div>'
+        actual = data.handle_folded_content(test_input)
+        self.assertMultiLineEqual(actual, expect_output)
 
     def test_attachment(self):
         test_inputs = [
@@ -45,8 +47,15 @@ class MyTestCase(unittest.TestCase):
 
     @unittest.skip("make test_re works first")
     def test_write_post(self):
-        for post_builder in self.test_data:
-            post_builder.temp_write_to_md(self.drafts_dir_path)
+        xml_path = os.path.join(os.path.dirname(__file__), os.pardir, 'tistory-small.xml')
+
+        test_data = main.main(open(xml_path))
+        drafts_dir_path = os.path.join(os.path.dirname(__file__), '_drafts')
+        if not os.path.exists(drafts_dir_path):
+            os.makedirs(drafts_dir_path)
+
+        for post_builder in test_data:
+            post_builder.temp_write_to_md(drafts_dir_path)
 
         self.assertTrue(True)
 

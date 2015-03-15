@@ -6,3 +6,4 @@ __author__ = 'lemonApple'
 # TODO: 첨부파일인 경우 cfile1.uf.2542BE365190B50A1C3BBE.zip  -
 # TODO: -> http://rino0601.tistory.com/attachment/cfile1.uf@2542BE365190B50A1C3BBE.zip 로 해결 할 수 있다.
 # TODO: 동영상은 못 한다고 알려야 함.
+# TODO: <> 출력후에도 남은 <> 있으면 바꿔야.

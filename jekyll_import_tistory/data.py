@@ -96,10 +96,10 @@ class PostBuilder(object):
 
     def temp_write_to_md(self, output_dir):
         header_yaml = {
-            'layout': 'post',
+            'layout': 'post',  # FIXME: hardcoded
             'title': u"%s" % self.text_title_unprocessed,
         }
-        file_path = os.path.join(output_dir, "%s-%s.markdown" % (self.text_date_num, self.text_id))
+        file_path = os.path.join(output_dir, "%s-%s.markdown" % (self.text_date_num, self.text_id))  # FIXME: hardcoded
 
         with open(file_path, "w") as md_out:
             md_out.write("---\n")
@@ -107,13 +107,10 @@ class PostBuilder(object):
             md_out.write("---\n")
 
         self.html_content = handle_tistory_attachment(self.html_content)
+        self.html_content = handle_folded_content(self.html_content)
 
         with codecs.open(file_path, "a", encoding="utf-8") as md_out:
             md_out.write(self.html_content)
-
-    def temp_find_fold_text(self):
-        # found = re.finditer("\[#M.*?M#]", self.html_content, re.UNICODE)
-        pass
 
     def temp_find_movie(self):
         pass
@@ -126,20 +123,41 @@ def handle_tistory_attachment(html_content):
 
 
 def _processing_attachment(matched):
-    print matched.groupdict()
+    download_url = 'http://{tistory_url}/attachment/{pre_path}@{post_path}'.format(
+        tistory_url='rino0601.tistory.com',  # FIXME: hardcoded
+        pre_path=matched.group('pre_path'),
+        post_path=matched.group('post_path'))
+    print download_url
+    download_path = '{dir_path}/{file_path}'.format(
+        dir_path='from_tistory',  # FIXME: hardcoded
+        file_path=matched.group('post_path')
+    )
     if 'image/jpeg' in matched.group('attr'):
-        return u'<img src="{site_url_tmpl}{dir_path}{file_path}" {attr}>'.format(
+        return u'<img src="{site_url_tmpl}{download_path}" {attr}>'.format(
             site_url_tmpl='{{site.url}}/',
-            dir_path='from_tistory/',
-            file_path=matched.group('post_path'),
+            download_path=download_path,
             attr=matched.group('attr'))
     else:
-        tag = u'<a href="{site_url_tmpl}{dir_path}{file_path}" {attr}></a>'.format(
+        tag = u'<a href="{site_url_tmpl}{download_path}" {attr}></a>'.format(
             site_url_tmpl='{{site.url}}/',
-            dir_path='from_tistory/',
-            file_path=matched.group('post_path'),
+            download_path=download_path,
             attr=matched.group('attr'))
         soup = BeautifulSoup(tag).a
         soup.string = soup['filename']
         return unicode(soup)
 
+
+def handle_folded_content(html_content):
+    pattern = re.compile(r'\[#M_(?P<open_span>.+?)\|(?P<close_span>.+?)\|(?P<content>.+?)_M#\]',
+                         re.UNICODE)
+    return pattern.sub(_processing_folded_content, html_content)
+
+
+def _processing_folded_content(matched):
+    return u'<div class="tistory_folded_content">' \
+           u'<span class="open">{open_span}</span>' \
+           u'<span class="close">{close_span}</span>' \
+           u'{content}' \
+           u'</div>'.format(open_span=matched.group('open_span'),
+                            close_span=matched.group('close_span'),
+                            content=matched.group('content'))
