@@ -4,7 +4,6 @@ __author__ = 'lemonApple'
 import os
 import codecs
 import re
-
 import yaml
 
 
@@ -94,17 +93,19 @@ class PostBuilder(object):
         pass
 
     def temp_write_to_md(self, output_dir):
-        with open(os.path.join(output_dir, "%s-%s.markdown" % (self.text_date_num, self.text_id)), "w") as f:
-            f.write("---\n")
-            f.write(yaml.dump({'layout': 'post',
-                               'title': u"%s" % self.text_title_unprocessed},
-                              default_flow_style=False,
-                              allow_unicode=True))
-            f.write("---\n")
+        header_yaml = {
+            'layout': 'post',
+            'title': u"%s" % self.text_title_unprocessed,
+        }
+        file_path = os.path.join(output_dir, "%s-%s.markdown" % (self.text_date_num, self.text_id))
 
-        with codecs.open(os.path.join(output_dir, "%s-%s.markdown" % (self.text_date_num, self.text_id)), "a",
-                         encoding="utf-8") as f:
-            f.write(self.html_content)
+        with open(file_path, "w") as md_out:
+            md_out.write("---\n")
+            md_out.write(yaml.dump(header_yaml, default_flow_style=False, allow_unicode=True))
+            md_out.write("---\n")
+
+        with codecs.open(file_path, "a", encoding="utf-8") as md_out:
+            md_out.write(self.html_content)
 
     def temp_find_tistory_meta(self):
         return re.search("\[##_(.*?)_##]", self.html_content,

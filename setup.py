@@ -15,4 +15,5 @@ setup(name='jekyll_import_tistory',
       install_requires=['beautifulsoup4', 'PyYAML'],
       license='MIT',
       packages=['jekyll_import_tistory'],
+      test_suite='jekyll_import_tistory',
       zip_safe=False)
