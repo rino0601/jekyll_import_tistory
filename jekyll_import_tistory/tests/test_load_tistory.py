@@ -1,13 +1,21 @@
 # coding=utf-8
-__author__ = 'lemonApple'
+__author__ = 'rino0601'
 
 import unittest
 import os
 
-from jekyll_import_tistory import main, data
+from bs4 import BeautifulSoup
+
+from jekyll_import_tistory import data
 
 
 class MyTestCase(unittest.TestCase):
+    def setUp(self):
+        xml_path = os.path.join(os.path.dirname(__file__), os.pardir, 'backup-file-for-test.xml')
+        with open(xml_path) as xml:
+            soup = BeautifulSoup(xml)
+            self.builder = data.PostBuilder(soup.blog.post)
+
     def test_folded_content(self):
         test_input = u'[#M_openCV 받기|접기|<p>우선 sorceForge.net으로 갑니다. </p>_M#]'
         expect_output = u'<div class="tistory_folded_content">' \
@@ -15,7 +23,7 @@ class MyTestCase(unittest.TestCase):
                         u'<span class="close">접기</span>' \
                         u'<p>우선 sorceForge.net으로 갑니다. </p>' \
                         u'</div>'
-        actual = data.handle_folded_content(test_input)
+        actual = self.builder._handle_folded_content(test_input)
         self.assertMultiLineEqual(actual, expect_output)
 
     def test_attachment(self):
@@ -42,22 +50,8 @@ class MyTestCase(unittest.TestCase):
             u'>[##_Movie|kE9NExnxXoE$|http://cfile5.uf.tistory.com/image/163D643A50A651F4388770_##]</p>'
         ]
         for test_input, expect in zip(test_inputs, expected_outputs):
-            actual = data.handle_tistory_attachment(test_input)
+            actual = self.builder._handle_tistory_attachment(test_input)
             self.assertMultiLineEqual(actual, expect)
-
-    @unittest.skip("make test_re works first")
-    def test_write_post(self):
-        xml_path = os.path.join(os.path.dirname(__file__), os.pardir, 'tistory-small.xml')
-
-        test_data = main.main(open(xml_path))
-        drafts_dir_path = os.path.join(os.path.dirname(__file__), '_drafts')
-        if not os.path.exists(drafts_dir_path):
-            os.makedirs(drafts_dir_path)
-
-        for post_builder in test_data:
-            post_builder.temp_write_to_md(drafts_dir_path)
-
-        self.assertTrue(True)
 
 
 if __name__ == '__main__':

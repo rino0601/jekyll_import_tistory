@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<blog type="tattertools/1.1" migrational="true">
+    <post slogan="아이폰에-opencv-적용하기" format="1.1">
+        <author domain="tistory">717353</author>
+        <id>5</id>
+        <isKorea>Y</isKorea>
+        <visibility>public</visibility>
+        <title>아이폰에 opencv 적용하기.</title>
+        <content>&lt;p style=&quot;text-align: center; clear: none; float: none; &quot;&gt;&lt;/p&gt;&lt;p&gt;openCV 가
+            버젼&amp;nbsp;2.4.2&amp;nbsp;부터 iOS를 정식으로 지원하기 시작했습니다.&amp;nbsp;&lt;/p&gt;&lt;p&gt;그래서 아이폰에서도 openCV를 간편하게 쓸 수
+            있죠.&lt;/p&gt;&lt;p&gt;&amp;nbsp;... 말이 간편하다는 거지 저처럼 framework 사용 경험이 적은 사람은 이 쉬운 것도 갈피를 못 찾아 헤매기 일수 입니다.&lt;/p&gt;&lt;p&gt;&lt;br
+            /&gt;&lt;/p&gt;&lt;p&gt;그래서 정리해봤습니다.&amp;nbsp;&lt;/p&gt;&lt;p&gt;iOS 개발에 opencv를 적용하는 것부터, 적용한 김에 예제로 라플라스
+            샤프닝을 띄워보도록 하죠.&lt;/p&gt;&lt;p&gt;&lt;br /&gt;&lt;/p&gt;&lt;p&gt;준비물은....&lt;/p&gt;&lt;p&gt;Xcode&lt;/p&gt;&lt;p&gt;opencv.framework&lt;/p&gt;&lt;p&gt;그리고
+            UIImage - CvArr&amp;nbsp; 변환기 정도겠네요.&lt;/p&gt;&lt;p&gt;&lt;br /&gt;&lt;/p&gt;&lt;p&gt;이 글을 보시는 분들은 Xcode 정도야
+            당연히 가지고 계실 테니,&amp;nbsp;&lt;/p&gt;&lt;p&gt;openCV부터 받아 보도록 합시다.&lt;/p&gt;[#M_openCV 받기|접기|&lt;p&gt;우선
+            sorceForge.net으로 갑니다. 간단하게 sf.net이라고 쳐도 들어가 집니다.&lt;/p&gt;&lt;p&gt;[##_1C|cfile23.uf.1614C33A50A5F9802F5CA8.png|width=&quot;630&quot;
+            height=&quot;544&quot; filename=&quot;opencv.png&quot; filemime=&quot;image/jpeg&quot; style=&quot;text-align:
+            center; &quot;|_##]&lt;/p&gt;&lt;p&gt;이렇게 생긴 페이지로 갑니다. 여기서 옆에 보이는 Download를 누르면.&lt;/p&gt;&lt;p&gt;저처럼 헤매게
+            됩니다 -_- 저건 &quot;소스&quot; 입니다. 직접 빌드할꺼면 받아도 됩니다만, 어렵고, 게다가 지원하는 모든 OS의 프레임웤이 있기 때문에 저걸 받을 필요는 없습니다.&lt;/p&gt;&lt;p&gt;&lt;br
+            /&gt;&lt;/p&gt;&lt;p&gt;고로 우리는 어디로 가냐면&lt;/p&gt;&lt;p&gt;[##_1C|cfile30.uf.14180F3A50A5FA7C32708A.jpg|width=&quot;630&quot;
+            height=&quot;344&quot; filename=&quot;opencvfiles.png&quot; filemime=&quot;image/jpeg&quot; style=&quot;text-align:
+            center; &quot;|_##]&lt;/p&gt;&lt;p&gt;Files&amp;gt;opencv-ios 로 갑니다.&lt;/p&gt;&lt;p&gt;[##_1C|cfile6.uf.18162F3A50A5F9812C02DA.png|width=&quot;630&quot;
+            height=&quot;396&quot; filename=&quot;opencviOS.png&quot; filemime=&quot;image/jpeg&quot; style=&quot;text-align:
+            center; &quot;|_##]&lt;/p&gt;&lt;p&gt;지원하는 버젼이 보입니다. iOS는 2.4.2부터 지원해서인지, 2개 밖에 없네요. 내키는걸 골라줍시다. 이왕하는거 최신버젼이
+            좋겠죠.&lt;/p&gt;&lt;p&gt;[##_1C|cfile23.uf.112F943A50A5F9810832EB.png|width=&quot;630&quot; height=&quot;361&quot;
+            filename=&quot;opencviOSZip.png&quot; filemime=&quot;image/jpeg&quot; style=&quot;text-align: center; &quot;|_##]&lt;/p&gt;&lt;p&gt;&amp;nbsp;버젼
+            폴더 안에 들어가면 zip 파일이 있습니다. 이걸누르면.&lt;/p&gt;&lt;p&gt;[##_1C|cfile23.uf.1415EC3A50A5F97F2CA1B9.png|width=&quot;630&quot;
+            height=&quot;473&quot; filename=&quot;download.png&quot; filemime=&quot;image/jpeg&quot; style=&quot;text-align:
+            center; &quot;|_##]&lt;/p&gt;&lt;p&gt;많이 익숙한 다운로드 페이지가 나옵니다. 이것으로 프레임워크가 준비되었습니다.&lt;/p&gt;&lt;p&gt;&lt;br /&gt;&lt;/p&gt;&lt;p&gt;&lt;/p&gt;&lt;p
+            style=&quot;color: rgb(51, 51, 51); &quot;&gt;일단 여기까지 진행하셨으면,&lt;/p&gt;&lt;p style=&quot;color: rgb(51, 51,
+            51); &quot;&gt;[##_1C|cfile10.uf.1212835050A5F98621F42F.png|width=&quot;119&quot; height=&quot;97&quot;
+            filename=&quot;프웤폴더.png&quot; filemime=&quot;image/jpeg&quot; style=&quot;text-align: center; &quot;|_##]&lt;/p&gt;&lt;p
+            style=&quot;color: rgb(51, 51, 51); &quot;&gt;이렇게 생긴 폴더가 어딘가에 있어야 합니다.&lt;/p&gt;&lt;p style=&quot;color:
+            rgb(51, 51, 51); &quot;&gt;이걸 xcode에서 쓰기위해서 적절한 위치에 배치해야 합니다.&amp;nbsp;&lt;/p&gt;&lt;p style=&quot;color:
+            rgb(51, 51, 51); &quot;&gt;적절한 위치를 보여드리자면,&lt;/p&gt;&lt;p style=&quot;color: rgb(51, 51, 51); &quot;&gt;[##_1C|cfile23.uf.03186C5050A5F986168D83.png|width=&quot;630&quot;
+            height=&quot;198&quot; filename=&quot;프웤둘자리.png&quot; filemime=&quot;image/jpeg&quot; style=&quot;text-align:
+            center; &quot;|_##]&lt;/p&gt;&lt;p style=&quot;color: rgb(51, 51, 51); &quot;&gt;이런 위치가 됩니다. 사실, 이 과정은 안 하셔도
+            됩니다. 그럼에도 불구하고 이렇게 하는 이유는&lt;/p&gt;&lt;p style=&quot;color: rgb(51, 51, 51); &quot;&gt;[##_1C|cfile2.uf.18131B5050A5F9842094EB.png|width=&quot;630&quot;
+            height=&quot;448&quot; filename=&quot;저기에두는이유.png&quot; filemime=&quot;image/jpeg&quot; style=&quot;text-align:
+            center; &quot;|_##]&lt;/p&gt;&lt;p style=&quot;color: rgb(51, 51, 51); &quot;&gt;프레임워크 추가할때 검색이 되게 하기
+            위해서입니다.&lt;/p&gt;&lt;p style=&quot;color: rgb(51, 51, 51); &quot;&gt;저 위치에 두지 않으면, Add Other...를 눌러서 직접 찾아서
+            추가해주어야 하기때문에 아무래도 번거롭죠.&lt;/p&gt;&lt;p&gt;&lt;/p&gt;_M#]&lt;p&gt;&lt;br /&gt;&lt;/p&gt;[#M_예제-라플라스샤프닝|접기|&lt;p&gt;프레임워크가
+            준비되었으니 예제 프로젝트를 만들어 봅시다.&lt;/p&gt;&lt;p&gt;[##_1C|cfile1.uf.01156F5050A5F9841C89F2.png|width=&quot;630&quot;
+            height=&quot;428&quot; filename=&quot;예제를만들어봅시다.png&quot; filemime=&quot;image/jpeg&quot; style=&quot;text-align:
+            center; &quot;|_##]&lt;/p&gt;&lt;p&gt;대충 이런식으로 만들어 주세요, singleView 프로젝트 입니다.&lt;/p&gt;&lt;p&gt;그리고 저는 ARC를
+            씁니다. 따라서 이 뒤로 나올 코드에 메모리 관리는 신경쓰지 않습니다.&lt;/p&gt;&lt;p&gt;ARC 안 쓰실분들은 (ios 구버젼은 ARC가 안된다죠? ) 이점 유의해주세요.&lt;/p&gt;&lt;p&gt;[##_1C|cfile22.uf.1312FF3650A5FDD80D234F.jpg|width=&quot;630&quot;
+            height=&quot;301&quot; filename=&quot;프리픽스.png&quot; filemime=&quot;image/jpeg&quot; style=&quot;text-align:
+            center; &quot;|_##]&lt;/p&gt;&lt;p&gt;일단 Prefix.pch에 opencv 헤더를 추가해줍니다.&lt;/p&gt;&lt;p&gt;&lt;br /&gt;&lt;/p&gt;&lt;p&gt;그
+            다음 viewController.xib에 가서&lt;/p&gt;&lt;p&gt;&lt;br /&gt;&lt;/p&gt;&lt;p&gt;[##_1C|cfile7.uf.152A433A50A5F9820F890F.png|width=&quot;630&quot;
+            height=&quot;535&quot; filename=&quot;뷰.png&quot; filemime=&quot;image/jpeg&quot; style=&quot;text-align:
+            center; &quot;|_##]&lt;/p&gt;&lt;p&gt;이런식으로 만들어 줍니다.&lt;/p&gt;&lt;p&gt;지금부터 만들 예제는, 화면을 터치하면 라플라스샤프닝이 적용되고,
+            한번 더 터치하면 원본이미지가 나오게 할 겁니다.&lt;/p&gt;&lt;p&gt;&lt;br /&gt;&lt;/p&gt;&lt;p&gt;viewController.h에는&lt;/p&gt;&lt;p&gt;&lt;br
+            /&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center; clear: none; float: none; &quot;&gt;[##_1C|cfile29.uf.1217734750A5FEE61C33AD.png|width=&quot;532&quot;
+            height=&quot;194&quot; filename=&quot;헤더.png&quot; filemime=&quot;image/jpeg&quot;|_##]&lt;/p&gt;&lt;p&gt;이런식으로
+            작성해주세요.&lt;/p&gt;&lt;p&gt;IBOurlet 연결 하는거 잊지 마시구요.&lt;/p&gt;&lt;p&gt;&lt;br /&gt;&lt;/p&gt;&lt;p&gt;viewController.m에는&lt;br
+            /&gt;&lt;/p&gt;&lt;p&gt;[##_1C|cfile27.uf.11112C5050A5F9831EC8CE.png|width=&quot;630&quot; height=&quot;535&quot;
+            filename=&quot;뷰컨소스.png&quot; filemime=&quot;image/jpeg&quot; style=&quot;text-align: center; &quot;|_##]&lt;/p&gt;&lt;p&gt;이런식으로
+            작성해주세요.&amp;nbsp;&lt;/p&gt;&lt;p&gt;메모리에 올라갈때 이미지 처리를 다 해서 UIImage로 가지고 있고,&lt;/p&gt;&lt;p&gt;화면이 터치가 되면 그걸
+            바꿔 보여주는 코드입니다.&lt;/p&gt;&lt;p&gt;&lt;br /&gt;&lt;/p&gt;&lt;p&gt;그런데, 이미지의&amp;nbsp;주석에도 달려 있지만, IplImage를
+            어떻게 초기화 해야 할까요?&lt;/p&gt;&lt;p&gt;참고로 말씀드리자면, 파일에서 불러오는 cvLoad~ 는 iOS의 샌드박스 때문인지 항상 NULL 을 리턴합니다.&amp;nbsp;&lt;/p&gt;&lt;p&gt;그런고로,
+            UIImage를 변환해야 하는데요, 이걸 위해&lt;/p&gt;&lt;p&gt;[##_1C|cfile8.uf.021FB53A50A5F9811F46A3.png|width=&quot;264&quot;
+            height=&quot;131&quot; filename=&quot;변환기.png&quot; filemime=&quot;image/jpeg&quot; style=&quot;text-align:
+            center; &quot;|_##]&lt;/p&gt;&lt;p&gt;이런걸 준비했습니다.&amp;nbsp;&lt;/p&gt;&lt;p&gt;&lt;/p&gt;&lt;p&gt;&lt;/p&gt;&lt;p&gt;[##_1C|cfile3.uf.125F524F50A654DE353F50.zip|filename=&quot;opencvConverter.zip&quot;
+            filemime=&quot;application/zip&quot;|_##]&lt;/p&gt;&lt;p&gt;&lt;/p&gt;&lt;p&gt;&lt;/p&gt;&lt;p&gt;&lt;span
+            style=&quot;background-color: rgb(255, 255, 255); &quot;&gt;출처 :
+            http://stackoverflow.com/questions/12214273/opencv-install-in-xcode/12216556#12216556&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Iplimage
+            변환 코드도 stackoverflow.com의 다른곳에서 찾아서 붙여논건데, 이건 제가 책갈피를 안 저장했군요.. 어딘지 모르겠네&lt;/p&gt;&lt;p&gt;&lt;br /&gt;&lt;/p&gt;&lt;p&gt;받으신
+            다음에 적당히 배치해주세요&lt;/p&gt;&lt;p&gt;[##_1C|cfile25.uf.01299E3A50A5F9811043EB.png|width=&quot;232&quot; height=&quot;121&quot;
+            filename=&quot;변환기추가.png&quot; filemime=&quot;image/jpeg&quot; style=&quot;text-align: center; &quot;|_##]&lt;/p&gt;&lt;p&gt;저는
+            supporting Files에 두는 편입니다.&lt;/p&gt;&lt;p&gt;&lt;br /&gt;&lt;/p&gt;&lt;p&gt;변환기를 얻었으니 코드를 수정해야 겠죠?&lt;/p&gt;&lt;p&gt;[##_1C|cfile6.uf.154B0B4450A603461717F8.jpg|width=&quot;630&quot;
+            height=&quot;166&quot; filename=&quot;뷰컨에적용.png&quot; filemime=&quot;image/jpeg&quot; style=&quot;text-align:
+            center; &quot;|_##]&lt;/p&gt;&lt;p&gt;이렇게 바뀝니다. &amp;nbsp; - 헤더 임포트 하는거 잊지 마세요.&lt;/p&gt;&lt;p&gt;약간 문제가 있는데
+            주석에 써있으니 참고하세요.&lt;/p&gt;&lt;p&gt;&amp;nbsp;@ UIImageFromeIplImage 고쳐주실 분 찾습니다.....&lt;/p&gt;&lt;p&gt;&lt;br
+            /&gt;&lt;/p&gt;&lt;p&gt;여기까지 따라오고 난뒤 빌드를 해보면...&lt;/p&gt;&lt;p&gt;빌드가 안됩니다.&lt;/p&gt;&lt;p&gt;[##_1C|cfile24.uf.1776C64350A603F83339E8.png|width=&quot;259&quot;
+            height=&quot;146&quot; filename=&quot;빌드에러.png&quot; filemime=&quot;image/jpeg&quot; style=&quot;text-align:
+            center; &quot;|_##]&lt;/p&gt;&lt;p&gt;전 이런게 뜨네요.&lt;/p&gt;&lt;p&gt;&lt;br /&gt;&lt;/p&gt;&lt;p&gt;이걸 해결하기
+            위해서는 빌드세팅을 바꿔야 합니다.&lt;/p&gt;&lt;p&gt;이 방법은 이곳에서 알아 냈습니다.&lt;/p&gt;&lt;p&gt;http://karuanas.blogspot.kr/2012/04/opencv-corehpp.html&lt;/p&gt;&lt;p&gt;같은
+            블로그의 다른 글&lt;/p&gt;&lt;p&gt;http://karuanas.blogspot.kr/2012/08/ios-opencv.html&lt;/p&gt;&lt;p style=&quot;text-align:
+            center; clear: none; float: none; &quot;&gt;[##_1C|cfile5.uf.19177F4350A603F8090A74.jpg|width=&quot;630&quot;
+            height=&quot;216&quot; filename=&quot;빌드셋팅.jpg&quot; filemime=&quot;image/jpeg&quot;|_##]&lt;/p&gt;&lt;p
+            style=&quot;text-align: left; clear: none; float: none; &quot;&gt;이렇게 해주세요. 저 2개는 꼭 해야 합니다.&lt;/p&gt;&lt;p
+            style=&quot;text-align: left; clear: none; float: none; &quot;&gt;@ &amp;nbsp;이걸 하고 나서부터는 자동완성이 Objective-C
+            보다 c++ 우선으로 됩니다. &amp;nbsp;사실상 &amp;nbsp;[sender message]; 들은 자동완성이 안되요.&lt;/p&gt;&lt;p style=&quot;text-align:
+            left; clear: none; float: none; &quot;&gt;관련 작업 다 해놓고 하시길 추천합니다.&lt;/p&gt;&lt;p style=&quot;text-align:
+            left; clear: none; float: none; &quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;p style=&quot;text-align: left; clear:
+            none; float: none; &quot;&gt;예제가 완성되었습니다.&lt;/p&gt;&lt;p style=&quot;text-align: left; clear: none; float:
+            none; &quot;&gt;근데 그러고 보니 이미지를 빼먹었네요.&amp;nbsp;&lt;/p&gt;&lt;p style=&quot;text-align: left; clear: none;
+            float: none; &quot;&gt;전 이걸 쓰도록 하겠습니다.&lt;/p&gt;&lt;p style=&quot;text-align: center; clear: none; float:
+            none; &quot;&gt;[##_1C|cfile23.uf.1929B64850A651382796D3.PNG|width=&quot;320&quot; height=&quot;480&quot;
+            filename=&quot;Lena.PNG&quot; filemime=&quot;image/jpeg&quot;|_##]&lt;/p&gt;&lt;p style=&quot;text-align:
+            left; clear: none; float: none; &quot;&gt;왠지 이분을 써야 할 것 같아서요.&lt;/p&gt;&lt;p style=&quot;text-align: left;
+            clear: none; float: none; &quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;p style=&quot;text-align: left; clear: none;
+            float: none; &quot;&gt;그래서 빌드를 해보면 이런결과가 나옵니다.&lt;/p&gt;&lt;p style=&quot;text-align: left; clear: none;
+            float: none; &quot;&gt;[##_Movie|kE9NExnxXoE$|http://cfile5.uf.tistory.com/image/163D643A50A651F4388770_##]&lt;/p&gt;&lt;p
+            style=&quot;text-align: left; clear: none; float: none; &quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;p style=&quot;text-align:
+            left; clear: none; float: none; &quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;p style=&quot;text-align: left; clear:
+            none; float: none; &quot;&gt;정말 끝입니다.&lt;/p&gt;&lt;p style=&quot;text-align: left; clear: none; float: none;
+            &quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;p style=&quot;text-align: left; clear: none; float: none; &quot;&gt;이런글
+            쓰는건 처음이라 마무리를 어떻게 써야 할지 모르겠네요.&lt;/p&gt;&lt;p style=&quot;text-align: left; clear: none; float: none; &quot;&gt;예제
+            따라하시는게 귀찮으신 분은 아래에 있는 프로젝트 폴더를 받아서 빌드해보셔도 좋을것 같습니다.&lt;/p&gt;&lt;p style=&quot;text-align: left; clear:
+            none; float: none; &quot;&gt;(아 물론, 그냥 이것만 받으면 opencv 프레임워크가 없다고 나올겁니다. 프레임워크 위치는 맞춰주세요.)&lt;/p&gt;&lt;p
+            style=&quot;text-align: left; clear: none; float: none; &quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;p style=&quot;text-align:
+            left; clear: none; float: none; &quot;&gt;[##_1C|cfile27.uf.196EFA4450A6530E093E7B.zip|filename=&quot;LaplaceShapening.zip&quot;
+            filemime=&quot;application/zip&quot;|_##]&lt;/p&gt;&lt;p style=&quot;text-align: left; clear: none; float:
+            none; &quot;&gt;&lt;br /&gt;&lt;/p&gt;_M#]&lt;p style=&quot;text-align: left; clear: none; float: none;
+            &quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;p style=&quot;text-align: left; clear: none; float: none; &quot;&gt;&lt;br
+            /&gt;&lt;/p&gt;&lt;p style=&quot;text-align: left; clear: none; float: none; &quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;p&gt;&lt;br
+            /&gt;&lt;/p&gt;</content>
+        <location>/</location>
+        <password>3mdm5ndq</password>
+        <acceptComment>1</acceptComment>
+        <acceptTrackback>1</acceptTrackback>
+        <published>1353045099</published>
+        <created>1353045099</created>
+        <modified>1361375338</modified>
+        <device>2</device>
+        <uselessMargin>0</uselessMargin>
+        <category>아이폰</category>
+        <tag>ios</tag>
+        <tag>OpenCV</tag>
+        <tag>수정필요</tag>
+        <attachment mime="image/jpeg" size="149741" width="738" height="501">
+            <name>cfile1.uf.01156F5050A5F9841C89F2.png</name>
+            <label>예제를만들어봅시다.png</label>
+            <enclosure>0</enclosure>
+            <attached>1361375338</attached>
+            <downloads>0</downloads>
+        </attachment>
+        <attachment mime="image/jpeg" size="137221" width="763" height="542">
+            <name>cfile2.uf.18131B5050A5F9842094EB.png</name>
+            <label>저기에두는이유.png</label>
+            <enclosure>0</enclosure>
+            <attached>1361375338</attached>
+            <downloads>0</downloads>
+        </attachment>
+        <attachment mime="application/zip" size="4454" width="0" height="0">
+            <name>cfile3.uf.125F524F50A654DE353F50.zip</name>
+            <label>opencvConverter.zip</label>
+            <enclosure>0</enclosure>
+            <attached>1361375338</attached>
+            <downloads>0</downloads>
+        </attachment>
+        <attachment mime="image/jpeg" size="63417" width="630" height="216">
+            <name>cfile5.uf.19177F4350A603F8090A74.jpg</name>
+            <label>빌드셋팅.jpg</label>
+            <enclosure>0</enclosure>
+            <attached>1361375338</attached>
+            <downloads>0</downloads>
+        </attachment>
+        <attachment mime="image/jpeg" size="89233" width="630" height="166">
+            <name>cfile6.uf.154B0B4450A603461717F8.jpg</name>
+            <label>뷰컨에적용.png</label>
+            <enclosure>0</enclosure>
+            <attached>1361375338</attached>
+            <downloads>0</downloads>
+        </attachment>
+        <attachment mime="image/jpeg" size="62511" width="634" height="399">
+            <name>cfile6.uf.18162F3A50A5F9812C02DA.png</name>
+            <label>opencviOS.png</label>
+            <enclosure>0</enclosure>
+            <attached>1361375338</attached>
+            <downloads>0</downloads>
+        </attachment>
+        <attachment mime="image/jpeg" size="141125" width="1030" height="874">
+            <name>cfile7.uf.152A433A50A5F9820F890F.png</name>
+            <label>뷰.png</label>
+            <enclosure>0</enclosure>
+            <attached>1361375338</attached>
+            <downloads>0</downloads>
+        </attachment>
+        <attachment mime="image/jpeg" size="13985" width="264" height="131">
+            <name>cfile8.uf.021FB53A50A5F9811F46A3.png</name>
+            <label>변환기.png</label>
+            <enclosure>0</enclosure>
+            <attached>1361375338</attached>
+            <downloads>0</downloads>
+        </attachment>
+        <attachment mime="image/jpeg" size="11628" width="119" height="97">
+            <name>cfile10.uf.1212835050A5F98621F42F.png</name>
+            <label>프웤폴더.png</label>
+            <enclosure>0</enclosure>
+            <attached>1361375338</attached>
+            <downloads>0</downloads>
+        </attachment>
+        <attachment mime="image/jpeg" size="81652" width="630" height="301">
+            <name>cfile22.uf.1312FF3650A5FDD80D234F.jpg</name>
+            <label>프리픽스.png</label>
+            <enclosure>0</enclosure>
+            <attached>1361375338</attached>
+            <downloads>0</downloads>
+        </attachment>
+        <attachment mime="image/jpeg" size="85024" width="1227" height="385">
+            <name>cfile23.uf.03186C5050A5F986168D83.png</name>
+            <label>프웤둘자리.png</label>
+            <enclosure>0</enclosure>
+            <attached>1361375338</attached>
+            <downloads>0</downloads>
+        </attachment>
+        <attachment mime="image/jpeg" size="66866" width="636" height="364">
+            <name>cfile23.uf.112F943A50A5F9810832EB.png</name>
+            <label>opencviOSZip.png</label>
+            <enclosure>0</enclosure>
+            <attached>1361375338</attached>
+            <downloads>0</downloads>
+        </attachment>
+        <attachment mime="image/jpeg" size="231585" width="1024" height="768">
+            <name>cfile23.uf.1415EC3A50A5F97F2CA1B9.png</name>
+            <label>download.png</label>
+            <enclosure>0</enclosure>
+            <attached>1361375338</attached>
+            <downloads>0</downloads>
+        </attachment>
+        <attachment mime="image/jpeg" size="129393" width="634" height="547">
+            <name>cfile23.uf.1614C33A50A5F9802F5CA8.png</name>
+            <label>opencv.png</label>
+            <enclosure>0</enclosure>
+            <attached>1361375338</attached>
+            <downloads>0</downloads>
+        </attachment>
+        <attachment mime="image/jpeg" size="161310" width="640" height="960">
+            <name>cfile23.uf.1929B64850A651382796D3.PNG</name>
+            <label>Lena.PNG</label>
+            <enclosure>0</enclosure>
+            <attached>1361375338</attached>
+            <downloads>0</downloads>
+        </attachment>
+        <attachment mime="image/jpeg" size="27809" width="259" height="146">
+            <name>cfile24.uf.1776C64350A603F83339E8.png</name>
+            <label>빌드에러.png</label>
+            <enclosure>0</enclosure>
+            <attached>1361375338</attached>
+            <downloads>0</downloads>
+        </attachment>
+        <attachment mime="image/jpeg" size="18691" width="232" height="121">
+            <name>cfile25.uf.01299E3A50A5F9811043EB.png</name>
+            <label>변환기추가.png</label>
+            <enclosure>0</enclosure>
+            <attached>1361375338</attached>
+            <downloads>0</downloads>
+        </attachment>
+        <attachment mime="image/jpeg" size="205100" width="1030" height="874">
+            <name>cfile27.uf.11112C5050A5F9831EC8CE.png</name>
+            <label>뷰컨소스.png</label>
+            <enclosure>0</enclosure>
+            <attached>1361375338</attached>
+            <downloads>0</downloads>
+        </attachment>
+        <attachment mime="image/jpeg" size="0" width="0" height="0">
+            <name>cfile27.uf.112E1C4650A651F41B4354.jpg</name>
+            <label>thumb.jpg</label>
+            <enclosure>2</enclosure>
+            <attached>1361375338</attached>
+            <downloads>0</downloads>
+        </attachment>
+        <attachment mime="application/zip" size="854991" width="0" height="0">
+            <name>cfile27.uf.196EFA4450A6530E093E7B.zip</name>
+            <label>LaplaceShapening.zip</label>
+            <enclosure>0</enclosure>
+            <attached>1361375338</attached>
+            <downloads>0</downloads>
+        </attachment>
+        <attachment mime="image/jpeg" size="33912" width="532" height="194">
+            <name>cfile29.uf.1217734750A5FEE61C33AD.png</name>
+            <label>헤더.png</label>
+            <enclosure>0</enclosure>
+            <attached>1361375338</attached>
+            <downloads>0</downloads>
+        </attachment>
+        <attachment mime="image/jpeg" size="50632" width="630" height="344">
+            <name>cfile30.uf.14180F3A50A5FA7C32708A.jpg</name>
+            <label>opencvfiles.png</label>
+            <enclosure>0</enclosure>
+            <attached>1361375338</attached>
+            <downloads>0</downloads>
+        </attachment>
+        <movie playTime="9">
+            <author domain="tistory">717353</author>
+            <id>kE9NExnxXoE$</id>
+            <screenShot>http://cfile27.uf.tistory.com/image/112E1C4650A651F41B4354</screenShot>
+            <uploaded>1361375338</uploaded>
+            <title>아이폰에 opencv 적용하기.</title>
+            <category></category>
+            <public>N</public>
+            <allowCopy>N</allowCopy>
+        </movie>
+        <comment>
+            <commenter id="717353">
+                <name>레몬사과</name>
+                <homepage>http://rino0601.tistory.com</homepage>
+                <ip>222.121.126.67</ip>
+            </commenter>
+            <content>오류지적 환영합니다!</content>
+            <password></password>
+            <secret>0</secret>
+            <written>1353079166</written>
+            <isFiltered>0</isFiltered>
+        </comment>
+    </post>
+</blog>
